@@ -1,0 +1,97 @@
+"use server";
+
+import bcrypt from "bcryptjs";
+import { AuthError } from "next-auth";
+import { redirect } from "next/navigation";
+import { db } from "@/lib/db";
+import { signIn, signOut } from "@/lib/auth";
+import { registerSchema } from "@/lib/validations";
+
+export type ActionState = {
+  error?: string;
+  success?: string;
+};
+
+export async function registerAction(
+  _prev: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+  const parsed = registerSchema.safeParse({
+    name: formData.get("name"),
+    username: formData.get("username"),
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
+
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Invalid input" };
+  }
+
+  const email = parsed.data.email.toLowerCase();
+  const username = parsed.data.username.toLowerCase();
+
+  const existing = await db.user.findFirst({
+    where: { OR: [{ email }, { username }] },
+  });
+  if (existing) {
+    return {
+      error:
+        existing.email === email
+          ? "An account with this email already exists"
+          : "Username is taken",
+    };
+  }
+
+  const passwordHash = await bcrypt.hash(parsed.data.password, 10);
+  await db.user.create({
+    data: {
+      name: parsed.data.name,
+      email,
+      username,
+      passwordHash,
+    },
+  });
+
+  try {
+    await signIn("credentials", {
+      email,
+      password: parsed.data.password,
+      redirect: false,
+    });
+  } catch {
+    return { success: "Account created. Please sign in." };
+  }
+
+  redirect("/discover");
+}
+
+export async function loginAction(
+  _prev: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+  const email = String(formData.get("email") ?? "").trim();
+  const password = String(formData.get("password") ?? "");
+
+  if (!email || !password) {
+    return { error: "Enter your email and password" };
+  }
+
+  try {
+    await signIn("credentials", {
+      email,
+      password,
+      redirectTo: "/discover",
+    });
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return { error: "Invalid email or password" };
+    }
+    throw error;
+  }
+
+  return {};
+}
+
+export async function logoutAction() {
+  await signOut({ redirectTo: "/" });
+}
