@@ -27,6 +27,20 @@ npm run dev
 `DATABASE_URL` is the pooled connection (app traffic).  
 `DATABASE_URL_UNPOOLED` is the direct connection (Prisma migrations / `db push`).
 
+## Vercel
+
+Set these environment variables for **Production** (and Preview if you use it):
+
+| Variable | Notes |
+| --- | --- |
+| `DATABASE_URL` | Neon pooled connection (`-pooler` host) |
+| `DATABASE_URL_UNPOOLED` | Neon direct connection |
+| `AUTH_SECRET` | Random secret (`openssl rand -base64 32`) |
+| `AUTH_URL` | Your deployment URL, e.g. `https://your-app.vercel.app` |
+| `NEXTAUTH_URL` | Same as `AUTH_URL` |
+
+Pull Neon values locally with `neon deploy` / `neon env pull`, then paste them into the Vercel dashboard.
+
 Open [http://localhost:3000](http://localhost:3000).
 
 Seed data includes only the official founding journey **Building THRIVE 🚀**.
