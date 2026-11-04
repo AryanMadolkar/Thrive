@@ -4,13 +4,28 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 
 export default async function LandingPage() {
-  const session = await auth();
+  let session = null;
+  try {
+    session = await auth();
+  } catch {
+    // Missing AUTH_SECRET during misconfigured deploys should not hard-crash the landing.
+  }
   if (session?.user) redirect("/discover");
 
-  const founding = await db.journey.findFirst({
-    where: { isOfficial: true, slug: "building-thrive" },
-    select: { slug: true, title: true, description: true },
-  });
+  let founding: {
+    slug: string;
+    title: string;
+    description: string | null;
+  } | null = null;
+
+  try {
+    founding = await db.journey.findFirst({
+      where: { isOfficial: true, slug: "building-thrive" },
+      select: { slug: true, title: true, description: true },
+    });
+  } catch {
+    founding = null;
+  }
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#fafafa] text-foreground">

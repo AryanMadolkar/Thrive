@@ -21,11 +21,17 @@ export default async function DiscoverPage({
   const tab = (params.tab as "for-you" | "following" | "popular") || "for-you";
   const search = params.q?.trim();
 
-  const journeys = await getDiscoverFeed({
-    viewerId: session?.user?.id,
-    tab,
-    search,
-  });
+  let journeys: Awaited<ReturnType<typeof getDiscoverFeed>> = [];
+  let feedError = false;
+  try {
+    journeys = await getDiscoverFeed({
+      viewerId: session?.user?.id,
+      tab,
+      search,
+    });
+  } catch {
+    feedError = true;
+  }
 
   return (
     <div className="space-y-4 pt-1 md:pt-0">
@@ -35,7 +41,12 @@ export default async function DiscoverPage({
         focusSearch={params.focus === "search"}
       />
 
-      {journeys.length === 0 ? (
+      {feedError ? (
+        <EmptyState
+          title="Can’t reach the database"
+          description="Check that DATABASE_URL and AUTH_SECRET are set in Vercel environment variables, then redeploy."
+        />
+      ) : journeys.length === 0 ? (
         <EmptyState
           title={
             tab === "following"

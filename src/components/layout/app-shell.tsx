@@ -7,12 +7,22 @@ import {
 } from "@/components/layout/sidebar";
 
 export async function AppShell({ children }: { children: React.ReactNode }) {
-  const session = await auth();
+  let session = null;
+  try {
+    session = await auth();
+  } catch {
+    session = null;
+  }
+
   let unread = 0;
   if (session?.user?.id) {
-    unread = await db.notification.count({
-      where: { recipientId: session.user.id, read: false },
-    });
+    try {
+      unread = await db.notification.count({
+        where: { recipientId: session.user.id, read: false },
+      });
+    } catch {
+      unread = 0;
+    }
   }
 
   return (
