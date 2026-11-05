@@ -43,26 +43,39 @@ export async function registerAction(
   }
 
   const passwordHash = await bcrypt.hash(parsed.data.password, 10);
-  await db.user.create({
-    data: {
-      name: parsed.data.name,
-      email,
-      username,
-      passwordHash,
-    },
-  });
+
+  try {
+    await db.user.create({
+      data: {
+        name: parsed.data.name,
+        email,
+        username,
+        passwordHash,
+      },
+    });
+  } catch (error) {
+    console.error("register create user failed", error);
+    return {
+      error:
+        "Could not create your account. Please try again in a moment.",
+    };
+  }
 
   try {
     await signIn("credentials", {
       email,
       password: parsed.data.password,
-      redirect: false,
+      redirectTo: "/discover",
     });
-  } catch {
-    return { success: "Account created. Please sign in." };
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return { success: "Account created. Please sign in." };
+    }
+    // Next.js redirect() throws; rethrow so navigation works.
+    throw error;
   }
 
-  redirect("/discover");
+  return {};
 }
 
 export async function loginAction(
