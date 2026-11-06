@@ -44,10 +44,10 @@ export default async function LandingPage() {
                   Start your journey
                 </Link>
                 <Link
-                  href="/discover"
+                  href="/login"
                   className="inline-flex h-12 items-center rounded-full border border-border bg-white px-7 text-sm font-semibold transition-colors hover:bg-hover active:scale-[0.98]"
                 >
-                  Explore journeys
+                  Log in
                 </Link>
               </div>
               <p className="mt-4 text-[13px] text-subtle">
@@ -174,10 +174,10 @@ export default async function LandingPage() {
                 Start your journey
               </Link>
               <Link
-                href="/discover"
+                href="/login"
                 className="inline-flex h-12 items-center rounded-full border border-border px-7 text-sm font-semibold transition-colors hover:bg-hover"
               >
-                Explore THRIVE
+                Log in
               </Link>
             </div>
           </div>
@@ -199,8 +199,8 @@ export default async function LandingPage() {
               </p>
               <ul className="mt-3 space-y-2 text-[14px]">
                 <li>
-                  <Link href="/discover" className="text-muted hover:text-foreground">
-                    Discover
+                  <Link href="/#how-it-works" className="text-muted hover:text-foreground">
+                    How it works
                   </Link>
                 </li>
                 <li>

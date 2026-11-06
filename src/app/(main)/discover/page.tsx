@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { JourneyCategory } from "@prisma/client";
-import { auth } from "@/lib/auth";
 import { getDiscoverFeed, type DiscoverTab } from "@/lib/feed";
+import { requireAuth } from "@/lib/require-auth";
 import { JourneyCard } from "@/components/journey/journey-card";
 import { DiscoverHeader } from "@/components/feed/discover-header";
 import { DiscoverTabs } from "@/components/feed/discover-tabs";
@@ -101,7 +101,7 @@ export default async function DiscoverPage({
   }>;
 }) {
   const params = await searchParams;
-  const session = await auth();
+  const sessionUser = await requireAuth("/discover");
   const tab = parseTab(params.tab);
   const category = parseCategory(params.category);
   const search = params.q?.trim() || undefined;
@@ -113,7 +113,7 @@ export default async function DiscoverPage({
 
   try {
     const feed = await getDiscoverFeed({
-      viewerId: session?.user?.id,
+      viewerId: sessionUser.id,
       tab,
       category,
       search,
@@ -130,7 +130,7 @@ export default async function DiscoverPage({
     tab,
     search,
     category,
-    signedIn: Boolean(session?.user),
+    signedIn: true,
   });
 
   const loadMoreParams = new URLSearchParams();

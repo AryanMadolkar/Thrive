@@ -69,10 +69,10 @@ export function DiscoverGrid() {
       </div>
       <div className="mt-8 text-center">
         <Link
-          href="/discover"
+          href="/register"
           className="inline-flex h-11 items-center rounded-full border border-border bg-white px-6 text-sm font-semibold transition-colors hover:bg-hover"
         >
-          Explore all journeys
+          Join to explore journeys
         </Link>
       </div>
     </div>

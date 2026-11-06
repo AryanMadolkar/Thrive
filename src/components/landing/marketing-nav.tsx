@@ -7,7 +7,6 @@ import { ThriveLogo } from "@/components/brand/thrive-logo";
 import { cn } from "@/lib/utils";
 
 const links = [
-  { href: "/discover", label: "Discover" },
   { href: "/#how-it-works", label: "How it works" },
   { href: "/#about", label: "About" },
 ];
