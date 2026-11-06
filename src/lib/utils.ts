@@ -49,6 +49,16 @@ export function formatDate(date: Date | string) {
   return format(new Date(date), "MMM d, yyyy");
 }
 
+/** Editorial short date, e.g. 13/09 */
+export function formatShortDate(date: Date | string) {
+  return format(new Date(date), "dd/MM");
+}
+
+export function categoryHashtag(category: string) {
+  const label = CATEGORY_LABELS[category] ?? category;
+  return `#${label.replace(/\s+/g, "")}`;
+}
+
 export function formatCompactCount(n: number) {
   if (n < 1000) return String(n);
   if (n < 10000) return `${(n / 1000).toFixed(1).replace(/\.0$/, "")}k`;

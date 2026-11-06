@@ -5,6 +5,7 @@ import {
   MobileHeader,
   Sidebar,
 } from "@/components/layout/sidebar";
+import { MotionProvider } from "@/components/providers/motion-provider";
 
 export async function AppShell({ children }: { children: React.ReactNode }) {
   let session = null;
@@ -26,15 +27,17 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-white md:flex">
-      <Sidebar unread={unread} />
-      <div className="flex min-h-screen flex-1 flex-col">
-        <MobileHeader unread={unread} />
-        <main className="mx-auto w-full max-w-[430px] md:max-w-2xl flex-1 px-4 pb-24 md:px-6 md:pb-10 md:pt-6">
-          {children}
-        </main>
-        <BottomNav />
+    <MotionProvider>
+      <div className="min-h-screen bg-[#f4f3f1] md:flex">
+        <Sidebar unread={unread} />
+        <div className="flex min-h-screen flex-1 flex-col">
+          <MobileHeader unread={unread} />
+          <main className="mx-auto w-full max-w-[430px] flex-1 px-4 pb-28 pt-4 sm:max-w-none sm:px-6 md:px-8 md:pb-12 md:pt-8 lg:max-w-6xl xl:px-10">
+            {children}
+          </main>
+          <BottomNav />
+        </div>
       </div>
-    </div>
+    </MotionProvider>
   );
 }

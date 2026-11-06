@@ -2,7 +2,9 @@
 
 import { useState, useTransition } from "react";
 import { Heart } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
 import { cn, formatCompactCount } from "@/lib/utils";
+import { springSnappy } from "@/lib/motion";
 import { toggleUpdateLike } from "@/lib/actions/social";
 
 export function EncourageButton({
@@ -19,11 +21,13 @@ export function EncourageButton({
   const [liked, setLiked] = useState(initialLiked);
   const [count, setCount] = useState(initialCount);
   const [pending, startTransition] = useTransition();
+  const reduceMotion = useReducedMotion();
 
   return (
-    <button
+    <motion.button
       type="button"
       disabled={pending}
+      whileTap={reduceMotion ? undefined : { scale: 0.92 }}
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -40,17 +44,30 @@ export function EncourageButton({
         liked ? "text-foreground" : "text-muted hover:text-foreground"
       )}
       aria-label="Like"
+      aria-pressed={liked}
     >
-      <Heart
-        className="h-4 w-4"
-        strokeWidth={1.75}
-        fill={liked ? "currentColor" : "none"}
-      />
+      <motion.span
+        animate={
+          reduceMotion
+            ? undefined
+            : liked
+              ? { scale: [1, 1.18, 1] }
+              : { scale: 1 }
+        }
+        transition={springSnappy}
+        className="inline-flex"
+      >
+        <Heart
+          className="h-4 w-4"
+          strokeWidth={1.75}
+          fill={liked ? "currentColor" : "none"}
+        />
+      </motion.span>
       <span>
         {showLabel && count === 0
           ? "Encourage"
           : formatCompactCount(count)}
       </span>
-    </button>
+    </motion.button>
   );
 }

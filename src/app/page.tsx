@@ -2,6 +2,7 @@ import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
+import { ThriveLogo } from "@/components/brand/thrive-logo";
 
 export default async function LandingPage() {
   let session = null;
@@ -47,7 +48,7 @@ export default async function LandingPage() {
       />
 
       <header className="relative z-10 mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
-        <span className="text-[22px] font-bold tracking-tight">THRIVE</span>
+        <ThriveLogo href="/" priority className="h-7 w-auto sm:h-8" />
         <nav className="flex items-center gap-2 sm:gap-3">
           <Link
             href="/discover"
@@ -75,8 +76,13 @@ export default async function LandingPage() {
           <p className="landing-fade text-[13px] font-medium tracking-[0.18em] text-muted uppercase">
             A social journal for progress
           </p>
-          <h1 className="landing-fade landing-fade-delay-1 mt-6 max-w-3xl text-[clamp(2.75rem,8vw,5.5rem)] font-bold leading-[0.95] tracking-tight">
-            THRIVE
+          <h1 className="landing-fade landing-fade-delay-1 mt-6 max-w-3xl">
+            <span className="sr-only">THRIVE</span>
+            <ThriveLogo
+              href={null}
+              priority
+              className="h-14 w-auto sm:h-20 md:h-24"
+            />
           </h1>
           <p className="landing-fade landing-fade-delay-2 mt-6 max-w-lg text-lg leading-relaxed text-muted md:text-xl">
             Document your journey. Share your progress. Inspire others.
@@ -147,7 +153,7 @@ export default async function LandingPage() {
 
         <footer className="border-t border-border bg-white">
           <div className="mx-auto flex max-w-5xl flex-col gap-4 px-6 py-10 sm:flex-row sm:items-center sm:justify-between">
-            <span className="text-sm font-bold tracking-tight">THRIVE</span>
+            <ThriveLogo href="/" className="h-6 w-auto" />
             <p className="text-xs text-subtle">
               Document your journey. Share your progress. Inspire others.
             </p>

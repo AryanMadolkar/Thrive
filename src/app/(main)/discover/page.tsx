@@ -6,6 +6,7 @@ import { JourneyCard } from "@/components/journey/journey-card";
 import { DiscoverHeader } from "@/components/feed/discover-header";
 import { DiscoverTabs } from "@/components/feed/discover-tabs";
 import { CategoryFilters } from "@/components/feed/category-filters";
+import { FeedTransition } from "@/components/feed/feed-transition";
 import { EmptyState } from "@/components/ui/empty-state";
 import { CATEGORIES } from "@/lib/utils";
 
@@ -39,7 +40,8 @@ function emptyCopy({
       title: "No journeys found",
       description: "Try another keyword or category.",
       actionLabel: "Clear search",
-      actionHref: category !== "ALL" ? `/discover?category=${category}` : "/discover",
+      actionHref:
+        category !== "ALL" ? `/discover?category=${category}` : "/discover",
     };
   }
 
@@ -137,53 +139,83 @@ export default async function DiscoverPage({
   if (search) loadMoreParams.set("q", search);
   loadMoreParams.set("page", String(page + 1));
 
+  const feedKey = `${tab}:${category}:${search ?? ""}:${page}`;
+
   return (
-    <div className="space-y-5 pt-1 md:pt-0">
-      <DiscoverHeader
-        tab={tab}
-        category={category}
-        search={search}
-        focusSearch={params.focus === "search"}
-      />
+    <div className="pt-1 md:pt-0">
+      {/* Norse-style: topic rail + journal grid */}
+      <div className="lg:grid lg:grid-cols-[148px_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[168px_minmax(0,1fr)] xl:gap-12">
+        <aside className="hidden lg:block">
+          <p className="mb-4 text-[11px] font-medium uppercase tracking-[0.14em] text-subtle">
+            Topics
+          </p>
+          <CategoryFilters
+            active={category}
+            tab={tab}
+            search={search}
+            orientation="vertical"
+          />
+        </aside>
 
-      <CategoryFilters
-        active={category}
-        tab={tab}
-        search={search}
-      />
+        <div className="space-y-6">
+          <DiscoverHeader
+            tab={tab}
+            category={category}
+            search={search}
+            focusSearch={params.focus === "search"}
+          />
 
-      <DiscoverTabs tab={tab} category={category} search={search} />
+          <div className="lg:hidden">
+            <CategoryFilters
+              active={category}
+              tab={tab}
+              search={search}
+              orientation="horizontal"
+            />
+          </div>
 
-      {feedError ? (
-        <EmptyState
-          title="Can’t reach the database"
-          description="Something went wrong loading journeys. Please try again in a moment."
-        />
-      ) : journeys.length === 0 ? (
-        <EmptyState
-          title={empty.title}
-          description={empty.description}
-          actionLabel={empty.actionLabel}
-          actionHref={empty.actionHref}
-        />
-      ) : (
-        <div className="space-y-3.5">
-          {journeys.map((journey) => (
-            <JourneyCard key={journey.id} journey={journey} />
-          ))}
+          <DiscoverTabs tab={tab} category={category} search={search} />
 
-          {hasMore ? (
-            <div className="pt-2 text-center">
-              <Link
-                href={`/discover?${loadMoreParams.toString()}`}
-                className="inline-flex h-10 items-center justify-center rounded-full border border-border bg-white px-5 text-sm font-semibold text-foreground transition-colors hover:bg-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20"
-              >
-                Show more
-              </Link>
-            </div>
-          ) : null}
+          <FeedTransition feedKey={feedKey}>
+            {feedError ? (
+              <EmptyState
+                title="Can’t reach the database"
+                description="Something went wrong loading journeys. Please try again in a moment."
+              />
+            ) : journeys.length === 0 ? (
+              <EmptyState
+                title={empty.title}
+                description={empty.description}
+                actionLabel={empty.actionLabel}
+                actionHref={empty.actionHref}
+              />
+            ) : (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 gap-px overflow-hidden border border-border/90 bg-border/90 sm:grid-cols-2">
+                  {journeys.map((journey, index) => (
+                    <JourneyCard
+                      key={journey.id}
+                      journey={journey}
+                      tone={index % 2 === 1 ? "muted" : "white"}
+                    />
+                  ))}
+                </div>
+
+                {hasMore ? (
+                  <div className="text-center">
+                    <Link
+                      href={`/discover?${loadMoreParams.toString()}`}
+                      className="pressable inline-flex h-10 items-center justify-center border border-border bg-white px-5 text-sm font-semibold text-foreground transition-colors hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20"
+                    >
+                      Show more
+                    </Link>
+                  </div>
+                ) : null}
+              </div>
+            )}
+          </FeedTransition>
         </div>
-      )}
+      </div>
     </div>
   );
 }

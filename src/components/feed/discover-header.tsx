@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Search } from "lucide-react";
 
 export function DiscoverHeader({
   tab,
@@ -21,29 +20,25 @@ export function DiscoverHeader({
   }, [focusSearch]);
 
   return (
-    <header className="space-y-4">
+    <header className="space-y-5">
       <div>
-        <h1 className="text-[26px] font-bold tracking-tight text-foreground md:text-[28px]">
+        <h1 className="text-[34px] font-semibold tracking-[-0.045em] text-foreground md:text-[40px]">
           Discover
         </h1>
-        <p className="mt-1.5 max-w-md text-sm leading-relaxed text-muted">
+        <p className="mt-2 max-w-lg text-[15px] leading-relaxed text-muted">
           Explore journeys, follow stories and find inspiration in other
           people’s progress.
         </p>
       </div>
 
-      <form action="/discover" method="get" className="relative">
+      {/* Mobile / compact search — desktop also has sidebar search */}
+      <form action="/discover" method="get" className="relative md:hidden">
         {tab !== "for-you" ? (
           <input type="hidden" name="tab" value={tab} />
         ) : null}
         {category && category !== "ALL" ? (
           <input type="hidden" name="category" value={category} />
         ) : null}
-        <Search
-          className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle"
-          strokeWidth={1.75}
-          aria-hidden
-        />
         <input
           ref={inputRef}
           name="q"
@@ -51,7 +46,7 @@ export function DiscoverHeader({
           type="search"
           placeholder="Search journeys, creators, topics…"
           aria-label="Search journeys, creators, and topics"
-          className="h-11 w-full rounded-full border border-border bg-warm pl-10 pr-4 text-sm text-foreground outline-none transition-colors placeholder:text-subtle focus:border-border-strong focus:bg-white"
+          className="h-11 w-full rounded-none border-0 border-b border-border bg-transparent px-0 text-sm text-foreground outline-none placeholder:text-subtle focus:border-foreground"
         />
       </form>
     </header>

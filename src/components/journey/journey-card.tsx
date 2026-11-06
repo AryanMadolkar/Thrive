@@ -1,15 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Heart, MessageCircle, Users } from "lucide-react";
-import { Avatar } from "@/components/ui/avatar";
+import { ArrowUpRight } from "lucide-react";
 import { JourneyFollowButton } from "@/components/journey/follow-button";
 import {
-  CATEGORY_LABELS,
-  STATUS_LABELS,
+  categoryHashtag,
   cn,
   formatCompactCount,
-  formatJourneyDuration,
-  formatRelative,
+  formatShortDate,
 } from "@/lib/utils";
 
 export type JourneyCardData = {
@@ -43,155 +40,110 @@ export type JourneyCardData = {
   } | null;
 };
 
-export function JourneyCard({ journey }: { journey: JourneyCardData }) {
-  const categoryLabel =
-    CATEGORY_LABELS[journey.category] ?? journey.category;
-  const statusLabel = STATUS_LABELS[journey.status] ?? journey.status;
-  const description = journey.description?.trim() || null;
+export function JourneyCard({
+  journey,
+  tone = "white",
+}: {
+  journey: JourneyCardData;
+  tone?: "white" | "muted";
+}) {
+  const hashtag = categoryHashtag(journey.category);
   const latest = journey.latestUpdate;
   const timestamp = latest?.createdAt ?? journey.startDate;
-  const reactionCount = latest?.likeCount ?? 0;
-  const commentCount = latest?.commentCount ?? 0;
+  const media = journey.coverImage || latest?.imageUrl || null;
 
   return (
     <article
       className={cn(
-        "fade-in group overflow-hidden rounded-[16px] border border-border bg-white transition-colors",
-        "hover:border-border-strong"
+        "fade-in group relative flex h-full flex-col overflow-hidden border border-border/90 bg-white",
+        "transition-[transform,box-shadow,border-color] duration-300 ease-[var(--ease-spring)]",
+        "hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[var(--card-shadow-hover)]"
       )}
     >
-      <div className="flex items-start justify-between gap-3 px-4 pt-4">
+      <div className="relative">
         <Link
-          href={`/u/${journey.creator.username}`}
-          className="flex min-w-0 items-center gap-2.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20"
+          href={`/j/${journey.slug}`}
+          className="card-media relative block aspect-square overflow-hidden bg-[#1a1a1a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-foreground/20"
         >
-          <Avatar
-            src={journey.creator.image}
-            name={journey.creator.name}
-            size="sm"
-          />
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-foreground">
-              {journey.creator.name}
-            </p>
-            <p className="truncate text-xs text-muted">
-              @{journey.creator.username}
-              <span className="text-subtle"> · </span>
-              <time dateTime={new Date(timestamp).toISOString()}>
-                {formatRelative(timestamp)}
-              </time>
-            </p>
-          </div>
+          {media ? (
+            <Image
+              src={media}
+              alt=""
+              fill
+              className="object-cover grayscale-[0.4] transition-[transform,filter] duration-500 ease-[var(--ease-spring)] group-hover:scale-[1.03] group-hover:grayscale-0"
+              sizes="(max-width: 768px) 100vw, 320px"
+            />
+          ) : (
+            <div className="absolute inset-0 flex flex-col justify-between bg-[linear-gradient(160deg,#111_0%,#2c2c2c_55%,#141414_100%)] p-5 text-white">
+              <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-white/55">
+                {journey.creator.name}
+              </p>
+              <p className="max-w-[13ch] text-[22px] font-semibold leading-tight tracking-[-0.03em]">
+                {journey.title}
+              </p>
+            </div>
+          )}
         </Link>
 
-        <JourneyFollowButton
-          journeyId={journey.id}
-          initialFollowing={journey.isFollowing}
-        />
+        <div className="absolute right-3 top-3 z-10 opacity-0 transition-opacity duration-200 group-hover:opacity-100 focus-within:opacity-100">
+          <JourneyFollowButton
+            journeyId={journey.id}
+            initialFollowing={journey.isFollowing}
+            compact
+            className="border-white/35 bg-black/40 text-white backdrop-blur-md hover:bg-black/55"
+          />
+        </div>
       </div>
 
       <Link
         href={`/j/${journey.slug}`}
-        className="mt-3 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-foreground/20"
+        className={cn(
+          "relative flex flex-1 flex-col px-4 pb-4 pt-3.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-foreground/20",
+          tone === "muted" ? "bg-surface-muted" : "bg-white"
+        )}
       >
-        {journey.coverImage ? (
-          <div className="relative mx-4 aspect-[16/9] overflow-hidden rounded-[12px] bg-warm">
-            <Image
-              src={journey.coverImage}
-              alt=""
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 560px"
-            />
-          </div>
-        ) : null}
+        <time
+          className="text-[12px] tabular-nums text-subtle"
+          dateTime={new Date(timestamp).toISOString()}
+          suppressHydrationWarning
+        >
+          {formatShortDate(timestamp)}
+        </time>
 
-        <div className={cn("px-4", journey.coverImage ? "pt-3.5" : "pt-0")}>
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-medium uppercase tracking-[0.04em] text-muted">
-            <span>{categoryLabel}</span>
-            <span className="text-border-strong" aria-hidden>
-              ·
-            </span>
-            <span>{statusLabel}</span>
-            {journey.isOfficial ? (
-              <>
-                <span className="text-border-strong" aria-hidden>
-                  ·
-                </span>
-                <span className="text-foreground">Official THRIVE Journey</span>
-              </>
-            ) : null}
-          </div>
+        <h2 className="mt-2.5 text-[17px] font-medium leading-[1.35] tracking-[-0.02em] text-foreground">
+          {journey.title}
+        </h2>
 
-          <h2 className="mt-1.5 text-[17px] font-bold leading-snug tracking-tight text-foreground">
-            {journey.title}
-          </h2>
-
-          {description ? (
-            <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-muted">
-              {description}
-            </p>
-          ) : null}
-
-          <p className="mt-2 text-xs text-subtle">
-            {formatJourneyDuration(journey.startDate)} in
+        {latest?.content ? (
+          <p className="mt-2 line-clamp-2 text-[13px] leading-relaxed text-muted">
+            {latest.content.trim()}
           </p>
-        </div>
-
-        {latest ? (
-          <div className="mx-4 mt-3 rounded-[12px] border border-border bg-warm/60 px-3 py-2.5">
-            <p className="text-[11px] font-medium uppercase tracking-[0.04em] text-subtle">
-              Latest update
-            </p>
-            <div className="mt-1.5 flex gap-3">
-              <p className="line-clamp-3 flex-1 text-[13px] leading-relaxed text-foreground">
-                “{latest.content.trim()}”
-              </p>
-              {latest.imageUrl ? (
-                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-warm">
-                  <Image
-                    src={latest.imageUrl}
-                    alt=""
-                    fill
-                    className="object-cover"
-                    sizes="56px"
-                  />
-                </div>
-              ) : null}
-            </div>
-          </div>
+        ) : journey.description ? (
+          <p className="mt-2 line-clamp-2 text-[13px] leading-relaxed text-muted">
+            {journey.description.trim()}
+          </p>
         ) : null}
-      </Link>
 
-      <div className="mt-3 flex items-center gap-3 border-t border-border px-4 py-3 text-[12px] text-muted">
-        <span className="inline-flex items-center gap-1.5">
-          <Users className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden />
-          <span>
-            {formatCompactCount(journey.followerCount)}{" "}
-            {journey.followerCount === 1 ? "follower" : "followers"}
+        <div className="mt-auto flex items-end justify-between gap-3 pt-5">
+          <div className="min-w-0">
+            <p className="truncate text-[12px] text-subtle">{hashtag}</p>
+            {journey.isOfficial ? (
+              <p className="mt-0.5 text-[11px] text-muted">Official</p>
+            ) : (
+              <p className="mt-0.5 text-[11px] text-subtle">
+                {formatCompactCount(journey.followerCount)} following
+              </p>
+            )}
+          </div>
+
+          <span
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-foreground text-white transition-transform duration-300 group-hover:scale-105"
+            aria-hidden
+          >
+            <ArrowUpRight className="h-4 w-4" strokeWidth={2} />
           </span>
-        </span>
-        <span className="text-border-strong" aria-hidden>
-          ·
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <Heart className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden />
-          <span>
-            {formatCompactCount(reactionCount)}{" "}
-            {reactionCount === 1 ? "reaction" : "reactions"}
-          </span>
-        </span>
-        <span className="text-border-strong" aria-hidden>
-          ·
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <MessageCircle className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden />
-          <span>
-            {formatCompactCount(commentCount)}{" "}
-            {commentCount === 1 ? "comment" : "comments"}
-          </span>
-        </span>
-      </div>
+        </div>
+      </Link>
     </article>
   );
 }

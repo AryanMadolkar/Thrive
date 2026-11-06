@@ -13,9 +13,11 @@ export function EmptyState({
   actionHref?: string;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-[var(--radius-card)] border border-dashed border-border bg-surface px-6 py-16 text-center">
-      <h3 className="text-base font-medium text-foreground">{title}</h3>
-      <p className="mt-2 max-w-sm text-sm text-muted leading-relaxed">
+    <div className="fade-in flex flex-col items-center justify-center rounded-[var(--radius-card)] border border-dashed border-border/90 bg-white/70 px-6 py-16 text-center shadow-[var(--glass-shadow-soft)] backdrop-blur-sm">
+      <h3 className="text-[16px] font-semibold tracking-[-0.02em] text-foreground">
+        {title}
+      </h3>
+      <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted">
         {description}
       </p>
       {actionLabel && actionHref ? (

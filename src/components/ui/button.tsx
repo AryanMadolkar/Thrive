@@ -3,18 +3,26 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-control)] text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20",
+  cn(
+    "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium",
+    "rounded-[var(--radius-control)] disabled:pointer-events-none disabled:opacity-50",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20",
+    "pressable active:scale-[0.97]"
+  ),
   {
     variants: {
       variant: {
-        primary: "bg-foreground text-white hover:bg-foreground/90",
+        primary:
+          "bg-foreground text-white shadow-[0_1px_2px_rgba(0,0,0,0.08)] hover:bg-foreground/90",
         secondary:
-          "bg-surface text-foreground border border-border hover:bg-hover",
+          "border border-border bg-white/80 text-foreground shadow-[var(--glass-shadow-soft)] hover:bg-hover",
         ghost: "text-foreground hover:bg-hover",
         encourage:
-          "bg-foreground text-white hover:bg-foreground/90 px-4",
+          "bg-foreground px-4 text-white shadow-[0_1px_2px_rgba(0,0,0,0.08)] hover:bg-foreground/90",
         danger: "bg-danger text-white hover:bg-danger/90",
-        link: "text-muted underline-offset-4 hover:underline hover:text-foreground px-0",
+        link: "px-0 text-muted underline-offset-4 hover:text-foreground hover:underline",
+        glass:
+          "glass-pill text-foreground hover:brightness-[1.02]",
       },
       size: {
         sm: "h-8 px-3 text-xs",

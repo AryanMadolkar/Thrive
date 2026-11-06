@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ThriveLogo } from "@/components/brand/thrive-logo";
 
 export default function AuthLayout({
   children,
@@ -16,9 +17,9 @@ export default function AuthLayout({
               "radial-gradient(ellipse 70% 50% at 20% 0%, #e8e8e8 0%, transparent 55%)",
           }}
         />
-        <Link href="/" className="relative z-10 text-[22px] font-bold tracking-tight">
-          THRIVE
-        </Link>
+        <div className="relative z-10">
+          <ThriveLogo href="/" priority className="h-8 w-auto" />
+        </div>
         <div className="relative z-10 max-w-sm">
           <p className="text-[13px] font-medium tracking-[0.16em] text-muted uppercase">
             Welcome
@@ -40,9 +41,7 @@ export default function AuthLayout({
 
       <div className="flex min-h-screen flex-col">
         <div className="flex items-center justify-between px-5 py-5 md:hidden">
-          <Link href="/" className="text-[22px] font-bold tracking-tight">
-            THRIVE
-          </Link>
+          <ThriveLogo href="/" className="h-7 w-auto" />
           <Link href="/discover" className="text-sm text-muted">
             Explore
           </Link>
