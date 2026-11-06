@@ -5,24 +5,35 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 /**
- * Neon pooled URLs often include `channel_binding=require`, which breaks
- * some serverless/pgbouncer clients. Strip it and keep sslmode=require.
+ * Normalize Neon / Vercel DATABASE_URL for Prisma's query engine.
+ * - Strip wrapping quotes (common paste mistake in dashboards)
+ * - Drop channel_binding=require (breaks some pooler clients)
+ * - Add pgbouncer=true for Neon -pooler hosts
  */
-function connectionUrl() {
-  const raw = process.env.DATABASE_URL;
-  if (!raw) {
+function normalizeDatabaseUrl(raw: string): string {
+  let value = raw.trim();
+  if (
+    (value.startsWith('"') && value.endsWith('"')) ||
+    (value.startsWith("'") && value.endsWith("'"))
+  ) {
+    value = value.slice(1, -1);
+  }
+
+  if (
+    !value.startsWith("postgresql://") &&
+    !value.startsWith("postgres://")
+  ) {
     throw new Error(
-      "DATABASE_URL is not set. Add it in Vercel → Project → Settings → Environment Variables."
+      `DATABASE_URL must start with postgresql:// or postgres:// (got “${value.slice(0, 24)}…” ). Re-set it in Vercel from your Neon pooled connection string, then redeploy.`
     );
   }
 
   try {
-    const url = new URL(raw);
+    const url = new URL(value);
     url.searchParams.delete("channel_binding");
     if (!url.searchParams.get("sslmode")) {
       url.searchParams.set("sslmode", "require");
     }
-    // PgBouncer (Neon pooler) works more reliably with Prisma when this is set.
     if (
       url.hostname.includes("-pooler.") &&
       !url.searchParams.has("pgbouncer")
@@ -31,17 +42,22 @@ function connectionUrl() {
     }
     return url.toString();
   } catch {
-    return raw;
+    return value;
   }
 }
 
 function createPrismaClient() {
-  // Standard Prisma engine on Vercel Node — more reliable than the Neon
-  // WebSocket adapter for App Router server components / server actions.
+  const raw = process.env.DATABASE_URL;
+  if (!raw) {
+    throw new Error(
+      "DATABASE_URL is not set. Add it in Vercel → Project → Settings → Environment Variables."
+    );
+  }
+
+  // Mutate env before PrismaClient reads schema `env("DATABASE_URL")`.
+  process.env.DATABASE_URL = normalizeDatabaseUrl(raw);
+
   return new PrismaClient({
-    datasources: {
-      db: { url: connectionUrl() },
-    },
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
 }
@@ -54,9 +70,7 @@ function getClient() {
 }
 
 // Lazy proxy so `next build` can import modules without requiring DATABASE_URL
-// at collect-time. The client is created on first real DB access at runtime.
-// Important: do not pass the Proxy as `receiver` to Reflect.get — Prisma model
-// getters break when `this` is the empty proxy target.
+// at collect-time. Do not pass the Proxy as Reflect receiver — Prisma getters break.
 export const db = new Proxy({} as PrismaClient, {
   get(_target, prop) {
     const client = getClient();
