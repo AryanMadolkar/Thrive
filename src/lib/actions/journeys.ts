@@ -143,12 +143,14 @@ export async function createUpdateAction(formData: FormData) {
     },
   });
 
-  if (journey.status === "DRAFT") {
-    await db.journey.update({
-      where: { id: journey.id },
-      data: { status: "ACTIVE" },
-    });
-  }
+  // Keep Discover “For you” ordering honest — bump journey activity time.
+  await db.journey.update({
+    where: { id: journey.id },
+    data: {
+      updatedAt: new Date(),
+      ...(journey.status === "DRAFT" ? { status: "ACTIVE" as const } : {}),
+    },
+  });
 
   revalidatePath(`/j/${journey.slug}`);
   revalidatePath("/discover");

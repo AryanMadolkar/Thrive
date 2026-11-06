@@ -40,40 +40,63 @@ async function main() {
   const founding = await db.journey.create({
     data: {
       slug: "building-thrive",
-      title: "Building THRIVE 🚀",
+      title: "Building THRIVE",
       description:
-        "We're building a social platform where people can document their journeys, share their progress and motivate each other along the way.\n\nWe're starting with an idea. We'll share the entire journey here — the decisions, experiments, challenges, failures and milestones.",
-      goal: "Ship a calm, human place for people to document what they're becoming.",
+        "We're building a calm social platform where people document their journeys, share progress, and encourage one another — starting with the idea and sharing every decision along the way.",
+      goal: "Ship a human place for people to document what they're becoming.",
       category: "BUILDING",
       visibility: "PUBLIC",
       status: "ACTIVE",
-      startDate: daysAgo(20),
+      startDate: daysAgo(28),
       isFeatured: true,
       isOfficial: true,
       creatorId: thrive.id,
+      updatedAt: daysAgo(0),
     },
   });
 
   const updates = [
     {
-      content: "The idea — a calm place to document personal progress.",
-      days: 19,
+      content:
+        "Why we started: most social feeds reward performance. We wanted a quieter place for progress — where documenting a journey matters more than looking finished.",
+      days: 27,
       milestone: true,
     },
     {
-      content: "Designing the feed. Monochrome interface. Colour from photos.",
-      days: 15,
+      content:
+        "The original idea: journeys first, not isolated posts. Follow someone's marathon training, learning streak, or product build as a continuous story.",
+      days: 24,
       milestone: true,
     },
     {
-      content: "Building the MVP — journeys, updates, encouragement.",
-      days: 8,
+      content:
+        "Early design decision: keep the interface monochrome. People's photos and stories bring the colour. Less chrome, more substance.",
+      days: 20,
       milestone: true,
     },
     {
-      content: "Launching soon. Following along means a lot.",
-      days: 0,
+      content:
+        "Building the first version: journeys, progress updates, follow, and encouragement. Starting simple so the core loop feels right.",
+      days: 14,
+      milestone: true,
+    },
+    {
+      content:
+        "Challenge: discovery without competition. No leaderboards. Just ways to find journeys worth following and people worth encouraging.",
+      days: 9,
       milestone: false,
+    },
+    {
+      content:
+        "What we're shipping next: a clearer Discover experience, better journey previews, and smoother ways to find stories by topic.",
+      days: 4,
+      milestone: false,
+    },
+    {
+      content:
+        "Launching the foundation. If you're here early — thank you. Follow along as we keep building in public.",
+      days: 0,
+      milestone: true,
     },
   ];
 
@@ -89,7 +112,7 @@ async function main() {
     });
   }
 
-  console.log("Seeded official THRIVE founding journey (no placeholder images).");
+  console.log("Seeded official THRIVE founding journey with genuine updates.");
 }
 
 main()

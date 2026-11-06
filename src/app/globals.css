@@ -117,3 +117,13 @@ button {
     transform: none;
   }
 }
+
+/* Hide scrollbar on category chips while keeping scroll */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}

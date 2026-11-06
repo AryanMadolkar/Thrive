@@ -24,7 +24,11 @@ export function JourneyFollowButton({
     <button
       type="button"
       disabled={pending}
-      onClick={() => {
+      aria-pressed={following}
+      aria-busy={pending}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
         startTransition(async () => {
           const result = await toggleJourneyFollow(journeyId);
           if (result?.ok) setFollowing(result.following);
@@ -32,13 +36,16 @@ export function JourneyFollowButton({
       }}
       className={cn(
         "shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors",
+        "min-h-[32px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20",
+        "disabled:cursor-wait disabled:opacity-70",
         following
-          ? "border-border bg-warm text-muted"
+          ? "border-border bg-warm text-muted hover:border-border-strong hover:text-foreground"
           : "border-foreground bg-white text-foreground hover:bg-hover",
+        compact && "px-3 py-1",
         className
       )}
     >
-      {following ? "Following" : "Follow"}
+      {pending ? "…" : following ? "Following" : "Follow"}
     </button>
   );
 }

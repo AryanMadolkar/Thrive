@@ -77,6 +77,29 @@ export const CATEGORY_LABELS: Record<string, string> = {
   OTHER: "Other",
 };
 
+/** Shorter labels for Discover filter chips */
+export const DISCOVER_CATEGORY_CHIPS: Array<{
+  value: string;
+  label: string;
+}> = [
+  { value: "ALL", label: "All" },
+  { value: "FITNESS", label: "Fitness" },
+  { value: "LEARNING", label: "Learning" },
+  { value: "CAREER", label: "Career" },
+  { value: "BUILDING", label: "Building" },
+  { value: "CREATIVITY", label: "Creativity" },
+  { value: "TRAVEL", label: "Travel" },
+  { value: "PERSONAL_GROWTH", label: "Personal Growth" },
+  { value: "LIFESTYLE", label: "Lifestyle" },
+];
+
+export const STATUS_LABELS: Record<string, string> = {
+  ACTIVE: "Active",
+  PAUSED: "Paused",
+  COMPLETED: "Completed",
+  DRAFT: "Draft",
+};
+
 export const CATEGORIES = Object.keys(CATEGORY_LABELS) as Array<
   keyof typeof CATEGORY_LABELS
 >;

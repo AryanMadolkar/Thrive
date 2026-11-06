@@ -29,8 +29,8 @@ export default async function FollowingPage() {
       <h1 className="text-xl font-bold tracking-tight">Following</h1>
       {journeys.length === 0 ? (
         <EmptyState
-          title="Nothing here yet"
-          description="Follow a journey from Discover and their updates will show up here."
+          title="Your next favourite journey is out there"
+          description="Explore stories and follow the journeys that inspire you."
           actionLabel="Explore Discover"
           actionHref="/discover"
         />

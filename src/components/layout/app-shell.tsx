@@ -30,7 +30,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
       <Sidebar unread={unread} />
       <div className="flex min-h-screen flex-1 flex-col">
         <MobileHeader unread={unread} />
-        <main className="mx-auto w-full max-w-[430px] md:max-w-xl flex-1 px-4 pb-24 md:px-6 md:pb-10 md:pt-6">
+        <main className="mx-auto w-full max-w-[430px] md:max-w-2xl flex-1 px-4 pb-24 md:px-6 md:pb-10 md:pt-6">
           {children}
         </main>
         <BottomNav />
