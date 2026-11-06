@@ -18,24 +18,30 @@ const providers: Provider[] = [
       const parsed = loginSchema.safeParse(credentials);
       if (!parsed.success) return null;
 
-      const user = await db.user.findUnique({
-        where: { email: parsed.data.email.toLowerCase() },
-      });
-      if (!user?.passwordHash) return null;
+      try {
+        const user = await db.user.findUnique({
+          where: { email: parsed.data.email.toLowerCase() },
+        });
+        if (!user?.passwordHash) return null;
 
-      const valid = await bcrypt.compare(
-        parsed.data.password,
-        user.passwordHash
-      );
-      if (!valid) return null;
+        const valid = await bcrypt.compare(
+          parsed.data.password,
+          user.passwordHash
+        );
+        if (!valid) return null;
 
-      return {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        image: user.image,
-        username: user.username,
-      };
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          image: user.image,
+          username: user.username,
+        };
+      } catch (error) {
+        // Surface as failed credentials instead of a 500 / opaque AuthError.
+        console.error("credentials authorize failed", error);
+        return null;
+      }
     },
   }),
 ];

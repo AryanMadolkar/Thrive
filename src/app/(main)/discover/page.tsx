@@ -29,7 +29,8 @@ export default async function DiscoverPage({
       tab,
       search,
     });
-  } catch {
+  } catch (error) {
+    console.error("discover feed failed", error);
     feedError = true;
   }
 

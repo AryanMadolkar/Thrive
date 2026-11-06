@@ -30,9 +30,19 @@ export async function registerAction(
   const email = parsed.data.email.toLowerCase();
   const username = parsed.data.username.toLowerCase();
 
-  const existing = await db.user.findFirst({
-    where: { OR: [{ email }, { username }] },
-  });
+  let existing;
+  try {
+    existing = await db.user.findFirst({
+      where: { OR: [{ email }, { username }] },
+    });
+  } catch (error) {
+    console.error("register lookup failed", error);
+    return {
+      error:
+        "Could not reach the database. Please try again in a moment.",
+    };
+  }
+
   if (existing) {
     return {
       error:
@@ -69,6 +79,8 @@ export async function registerAction(
     });
   } catch (error) {
     if (error instanceof AuthError) {
+      // Account exists; auto sign-in failed (e.g. AUTH_SECRET / AUTH_URL).
+      console.error("register signIn failed", error);
       return { success: "Account created. Please sign in." };
     }
     // Next.js redirect() throws; rethrow so navigation works.
@@ -91,7 +103,7 @@ export async function loginAction(
 
   try {
     await signIn("credentials", {
-      email,
+      email: email.toLowerCase(),
       password,
       redirectTo: "/discover",
     });
@@ -99,6 +111,7 @@ export async function loginAction(
     if (error instanceof AuthError) {
       return { error: "Invalid email or password" };
     }
+    // Unexpected failures (redirect is a throw we must re-raise).
     throw error;
   }
 
