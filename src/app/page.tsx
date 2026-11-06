@@ -51,7 +51,7 @@ export default async function LandingPage() {
         <ThriveLogo href="/" priority className="h-7 w-auto sm:h-8" />
         <nav className="flex items-center gap-2 sm:gap-3">
           <Link
-            href="/discover"
+            href="/login"
             className="hidden text-sm text-muted transition hover:text-foreground sm:inline"
           >
             Explore
@@ -95,10 +95,10 @@ export default async function LandingPage() {
               Start your journey
             </Link>
             <Link
-              href="/discover"
+              href="/login"
               className="inline-flex h-12 items-center rounded-full border border-border bg-white px-7 text-sm font-semibold transition hover:bg-hover"
             >
-              Explore journeys
+              Sign in to explore
             </Link>
           </div>
         </section>
@@ -142,10 +142,10 @@ export default async function LandingPage() {
                 {founding.description}
               </p>
               <Link
-                href={`/j/${founding.slug}`}
+                href={`/login?callbackUrl=${encodeURIComponent(`/j/${founding.slug}`)}`}
                 className="mt-8 inline-flex text-sm font-semibold underline-offset-4 hover:underline"
               >
-                Follow along →
+                Sign in to follow along →
               </Link>
             </div>
           </section>

@@ -5,6 +5,7 @@ import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { signIn, signOut } from "@/lib/auth";
+import { safeCallbackUrl } from "@/lib/safe-callback";
 import { registerSchema } from "@/lib/validations";
 
 export type ActionState = {
@@ -71,11 +72,13 @@ export async function registerAction(
     };
   }
 
+  const redirectTo = safeCallbackUrl(formData.get("callbackUrl"));
+
   try {
     await signIn("credentials", {
       email,
       password: parsed.data.password,
-      redirectTo: "/discover",
+      redirectTo,
     });
   } catch (error) {
     if (error instanceof AuthError) {
@@ -96,6 +99,7 @@ export async function loginAction(
 ): Promise<ActionState> {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
+  const redirectTo = safeCallbackUrl(formData.get("callbackUrl"));
 
   if (!email || !password) {
     return { error: "Enter your email and password" };
@@ -105,7 +109,7 @@ export async function loginAction(
     await signIn("credentials", {
       email: email.toLowerCase(),
       password,
-      redirectTo: "/discover",
+      redirectTo,
     });
   } catch (error) {
     if (error instanceof AuthError) {

@@ -39,7 +39,7 @@ export function Sidebar({ unread = 0 }: { unread?: number }) {
   return (
     <aside className="sticky top-0 z-20 hidden h-svh w-[180px] shrink-0 flex-col self-start border-r border-border/60 bg-[#f4f3f1] px-5 py-8 md:flex lg:w-[220px] lg:px-6">
       <div className="mb-12">
-        <ThriveLogo href="/discover" priority className="h-8 w-auto lg:h-9" />
+        <ThriveLogo href="/discover" priority className="!h-8 w-auto lg:!h-9" />
       </div>
 
       <nav className="flex flex-1 flex-col gap-1">
@@ -142,7 +142,7 @@ export function MobileHeader({ unread = 0 }: { unread?: number }) {
   return (
     <header className="sticky top-0 z-30 md:hidden">
       <div className="mx-3 mt-3 flex items-center justify-between rounded-2xl border border-border/70 bg-[#f4f3f1]/95 px-3.5 py-2.5 backdrop-blur-md">
-        <ThriveLogo href="/discover" className="h-7 w-auto" />
+        <ThriveLogo href="/discover" className="!h-7 w-auto" />
         <div className="flex items-center gap-0.5">
           <Link
             href="/discover?focus=search"

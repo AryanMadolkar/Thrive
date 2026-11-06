@@ -29,7 +29,7 @@ const sizes = {
 } as const;
 
 export function ThriveLogo({
-  href = "/discover",
+  href = "/",
   variant = "full",
   tone = "light",
   className,

@@ -11,8 +11,8 @@ export default function NotFound() {
       <p className="mt-2 max-w-sm text-sm text-muted">
         The journey may be private, removed, or the link is incorrect.
       </p>
-      <Link href="/discover" className="mt-6">
-        <Button>Back to Discover</Button>
+      <Link href="/" className="mt-6">
+        <Button>Back to home</Button>
       </Link>
     </div>
   );

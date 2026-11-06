@@ -42,8 +42,8 @@ export default function AuthLayout({
       <div className="flex min-h-screen flex-col">
         <div className="flex items-center justify-between px-5 py-5 md:hidden">
           <ThriveLogo href="/" className="h-7 w-auto" />
-          <Link href="/discover" className="text-sm text-muted">
-            Explore
+          <Link href="/" className="text-sm text-muted">
+            Home
           </Link>
         </div>
         <div className="flex flex-1 items-center justify-center px-5 py-10 md:px-10">

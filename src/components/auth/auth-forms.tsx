@@ -53,7 +53,11 @@ function PasswordField({
   );
 }
 
-export function LoginForm() {
+export function LoginForm({
+  callbackUrl = "/discover",
+}: {
+  callbackUrl?: string;
+}) {
   const [state, action, pending] = useActionState(loginAction, initial);
 
   return (
@@ -64,6 +68,7 @@ export function LoginForm() {
       </p>
 
       <form action={action} className="mt-8 space-y-4">
+        <input type="hidden" name="callbackUrl" value={callbackUrl} />
         <div>
           <Label htmlFor="email">Email</Label>
           <Input
@@ -106,7 +111,11 @@ export function LoginForm() {
       <p className="mt-8 text-center text-sm text-muted">
         New to THRIVE?{" "}
         <Link
-          href="/register"
+          href={
+            callbackUrl && callbackUrl !== "/discover"
+              ? `/register?callbackUrl=${encodeURIComponent(callbackUrl)}`
+              : "/register"
+          }
           className="font-semibold text-foreground underline-offset-2 hover:underline"
         >
           Create an account
@@ -116,7 +125,11 @@ export function LoginForm() {
   );
 }
 
-export function RegisterForm() {
+export function RegisterForm({
+  callbackUrl = "/discover",
+}: {
+  callbackUrl?: string;
+}) {
   const [state, action, pending] = useActionState(registerAction, initial);
 
   return (
@@ -127,6 +140,7 @@ export function RegisterForm() {
       </p>
 
       <form action={action} className="mt-8 space-y-4">
+        <input type="hidden" name="callbackUrl" value={callbackUrl} />
         <div>
           <Label htmlFor="name">Name</Label>
           <Input
@@ -202,7 +216,11 @@ export function RegisterForm() {
       <p className="mt-8 text-center text-sm text-muted">
         Already have an account?{" "}
         <Link
-          href="/login"
+          href={
+            callbackUrl && callbackUrl !== "/discover"
+              ? `/login?callbackUrl=${encodeURIComponent(callbackUrl)}`
+              : "/login"
+          }
           className="font-semibold text-foreground underline-offset-2 hover:underline"
         >
           Sign in
