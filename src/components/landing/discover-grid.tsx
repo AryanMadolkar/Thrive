@@ -18,7 +18,7 @@ const journeys = [
     title: "Running a marathon",
     tag: "#Fitness",
     image:
-      "https://images.unsplash.com/photo-1452626038306-9bccaa873cae?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=900&q=80",
   },
   {
     title: "Learning photography",

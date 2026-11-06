@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { journeySchema, updateSchema } from "@/lib/validations";
+import { toMonochromeUrl } from "@/lib/mono-image";
 import { slugify } from "@/lib/utils";
 import { nanoid } from "nanoid";
 
@@ -48,7 +49,7 @@ export async function createJourneyAction(formData: FormData) {
       category: parsed.data.category,
       description: parsed.data.description || null,
       goal: parsed.data.goal || null,
-      coverImage: parsed.data.coverImage || null,
+      coverImage: toMonochromeUrl(parsed.data.coverImage),
       visibility: parsed.data.visibility,
       status: parsed.data.status ?? "ACTIVE",
       startDate: parsed.data.startDate
@@ -96,7 +97,7 @@ export async function updateJourneyAction(journeyId: string, formData: FormData)
       category: parsed.data.category,
       description: parsed.data.description || null,
       goal: parsed.data.goal || null,
-      coverImage: parsed.data.coverImage || null,
+      coverImage: toMonochromeUrl(parsed.data.coverImage),
       visibility: parsed.data.visibility,
       status: parsed.data.status ?? journey.status,
       startDate: parsed.data.startDate
@@ -136,7 +137,7 @@ export async function createUpdateAction(formData: FormData) {
   const update = await db.journeyUpdate.create({
     data: {
       content: parsed.data.content,
-      imageUrl: parsed.data.imageUrl || null,
+      imageUrl: toMonochromeUrl(parsed.data.imageUrl),
       isMilestone: parsed.data.isMilestone ?? false,
       journeyId: journey.id,
       authorId: user.id,

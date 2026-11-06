@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { createJourneyAction, createUpdateAction } from "@/lib/actions/journeys";
 import { Button } from "@/components/ui/button";
 import { FieldError, Input, Label, Textarea } from "@/components/ui/input";
+import { PhotoField } from "@/components/ui/photo-field";
 import { CATEGORY_LABELS } from "@/lib/utils";
 
 export function CreatePanel({
@@ -100,10 +101,7 @@ function CreateJourneyForm() {
           placeholder="Not every journey needs a deadline"
         />
       </div>
-      <div>
-        <Label htmlFor="coverImage">Cover image URL (optional)</Label>
-        <Input id="coverImage" name="coverImage" type="url" placeholder="https://" />
-      </div>
+      <PhotoField name="coverImage" label="Cover photo (optional)" />
       <div className="grid grid-cols-2 gap-3">
         <div>
           <Label htmlFor="startDate">Start date</Label>
@@ -206,10 +204,7 @@ function CreateUpdateForm({
           className="min-h-[160px]"
         />
       </div>
-      <div>
-        <Label htmlFor="imageUrl">Photo URL (optional)</Label>
-        <Input id="imageUrl" name="imageUrl" type="url" placeholder="https://" />
-      </div>
+      <PhotoField name="imageUrl" label="Photo (optional)" />
       <label className="flex items-center gap-2 text-sm text-muted">
         <input type="checkbox" name="isMilestone" className="rounded border-border" />
         Mark as milestone

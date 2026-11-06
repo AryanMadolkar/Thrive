@@ -1,7 +1,7 @@
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { JourneyFollowButton } from "@/components/journey/follow-button";
+import { SafeImage } from "@/components/ui/safe-image";
 import {
   categoryHashtag,
   cn,
@@ -66,11 +66,11 @@ export function JourneyCard({
           className="card-media relative block aspect-square overflow-hidden bg-[#1a1a1a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-foreground/20"
         >
           {media ? (
-            <Image
+            <SafeImage
               src={media}
               alt=""
               fill
-              className="object-cover grayscale-[0.4] transition-[transform,filter] duration-500 ease-[var(--ease-spring)] group-hover:scale-[1.03] group-hover:grayscale-0"
+              className="object-cover transition-transform duration-500 ease-[var(--ease-spring)] group-hover:scale-[1.03]"
               sizes="(max-width: 768px) 100vw, 320px"
             />
           ) : (

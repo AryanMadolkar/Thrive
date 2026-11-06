@@ -6,7 +6,7 @@ const cards = [
     title: "Learning to build something",
     tag: "#Building",
     image:
-      "https://images.unsplash.com/photo-1498050108023-c3279e83f603?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=900&q=80",
     className: "md:translate-y-2",
   },
   {

@@ -8,6 +8,7 @@ import {
 } from "@/lib/actions/journeys";
 import { Button } from "@/components/ui/button";
 import { FieldError, Input, Label, Textarea } from "@/components/ui/input";
+import { PhotoField } from "@/components/ui/photo-field";
 import { CATEGORY_LABELS } from "@/lib/utils";
 
 export function EditJourneyForm({ journey }: { journey: Journey }) {
@@ -59,15 +60,11 @@ export function EditJourneyForm({ journey }: { journey: Journey }) {
         <Label htmlFor="goal">Goal or intention</Label>
         <Input id="goal" name="goal" defaultValue={journey.goal ?? ""} />
       </div>
-      <div>
-        <Label htmlFor="coverImage">Cover image URL</Label>
-        <Input
-          id="coverImage"
-          name="coverImage"
-          type="url"
-          defaultValue={journey.coverImage ?? ""}
-        />
-      </div>
+      <PhotoField
+        name="coverImage"
+        label="Cover photo"
+        defaultValue={journey.coverImage ?? ""}
+      />
       <div className="grid grid-cols-2 gap-3">
         <div>
           <Label htmlFor="startDate">Start date</Label>

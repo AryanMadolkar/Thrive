@@ -143,23 +143,21 @@ export default async function DiscoverPage({
 
   return (
     <div className="pt-1 md:pt-0">
-      {/* Norse-style: topic rail + journal grid */}
-      <div className="lg:grid lg:grid-cols-[148px_minmax(0,1fr)] lg:items-start lg:gap-10 xl:grid-cols-[168px_minmax(0,1fr)] xl:gap-12">
-        <aside className="hidden lg:block">
-          <div className="sticky top-8 max-h-[calc(100svh-2rem)] overflow-y-auto pb-8 scrollbar-none">
-            <p className="mb-4 text-[11px] font-medium uppercase tracking-[0.14em] text-subtle">
-              Topics
-            </p>
-            <CategoryFilters
-              active={category}
-              tab={tab}
-              search={search}
-              orientation="vertical"
-            />
-          </div>
+      {/* Flex + self-start so Topics can stick; grid stretch breaks sticky */}
+      <div className="lg:flex lg:items-start lg:gap-10 xl:gap-12">
+        <aside className="sticky top-6 z-10 mb-6 hidden h-fit w-[148px] shrink-0 self-start lg:mb-0 lg:block xl:w-[168px]">
+          <p className="mb-4 text-[11px] font-medium uppercase tracking-[0.14em] text-subtle">
+            Topics
+          </p>
+          <CategoryFilters
+            active={category}
+            tab={tab}
+            search={search}
+            orientation="vertical"
+          />
         </aside>
 
-        <div className="space-y-6">
+        <div className="min-w-0 flex-1 space-y-6">
           <DiscoverHeader
             tab={tab}
             category={category}
@@ -193,7 +191,7 @@ export default async function DiscoverPage({
               />
             ) : (
               <div className="space-y-6">
-                <div className="grid grid-cols-1 gap-px overflow-hidden border border-border/90 bg-border/90 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-px border border-border/90 bg-border/90 sm:grid-cols-2">
                   {journeys.map((journey, index) => (
                     <JourneyCard
                       key={journey.id}

@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/safe-image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -169,7 +169,7 @@ export function JourneyDetailView({
 
       {journey.coverImage ? (
         <div className="relative aspect-[16/10] overflow-hidden rounded-[14px] bg-warm">
-          <Image
+          <SafeImage
             src={journey.coverImage}
             alt=""
             fill
@@ -227,7 +227,7 @@ export function JourneyDetailView({
                     </p>
                     {update.imageUrl ? (
                       <div className="relative mt-2 aspect-[16/9] overflow-hidden rounded-[10px] bg-warm">
-                        <Image
+                        <SafeImage
                           src={update.imageUrl}
                           alt=""
                           fill

@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { updateProfileAction } from "@/lib/actions/profile";
 import { Button } from "@/components/ui/button";
 import { FieldError, Input, Label, Textarea } from "@/components/ui/input";
+import { PhotoField } from "@/components/ui/photo-field";
 
 export function ProfileSettingsForm({
   user,
@@ -56,16 +57,11 @@ export function ProfileSettingsForm({
           placeholder="A short introduction"
         />
       </div>
-      <div>
-        <Label htmlFor="image">Profile photo URL</Label>
-        <Input
-          id="image"
-          name="image"
-          type="url"
-          defaultValue={user.image ?? ""}
-          placeholder="https://"
-        />
-      </div>
+      <PhotoField
+        name="image"
+        label="Profile photo"
+        defaultValue={user.image ?? ""}
+      />
       <FieldError>{error}</FieldError>
       {success ? <p className="text-sm text-muted">Profile saved.</p> : null}
       <Button type="submit" disabled={pending}>

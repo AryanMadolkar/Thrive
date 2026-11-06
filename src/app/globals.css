@@ -69,6 +69,11 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* All photography is monochrome; brand marks stay as authored */
+img:not(.brand-logo) {
+  filter: grayscale(1);
+}
+
 ::selection {
   background: #000000;
   color: #ffffff;

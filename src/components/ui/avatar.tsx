@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/safe-image";
 import { cn } from "@/lib/utils";
 
 const sizes = {
@@ -37,7 +37,7 @@ export function Avatar({
       )}
     >
       {src ? (
-        <Image
+        <SafeImage
           src={src}
           alt={name}
           width={dim}

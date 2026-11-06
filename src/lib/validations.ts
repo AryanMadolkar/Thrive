@@ -1,4 +1,9 @@
 import { z } from "zod";
+import { isImageSource } from "@/lib/mono-image";
+
+const imageSource = z
+  .string()
+  .refine((v) => isImageSource(v), { message: "Enter a valid image URL" });
 
 export const registerSchema = z
   .object({
@@ -31,7 +36,7 @@ export const loginSchema = z.object({
 export const profileSchema = z.object({
   name: z.string().min(2).max(60),
   bio: z.string().max(280).optional().or(z.literal("")),
-  image: z.string().url().optional().or(z.literal("")),
+  image: imageSource,
 });
 
 export const journeySchema = z.object({
@@ -49,7 +54,7 @@ export const journeySchema = z.object({
   ]),
   description: z.string().max(2000).optional().or(z.literal("")),
   goal: z.string().max(500).optional().or(z.literal("")),
-  coverImage: z.string().url().optional().or(z.literal("")),
+  coverImage: imageSource,
   startDate: z.string().optional(),
   targetDate: z.string().optional().or(z.literal("")),
   visibility: z.enum(["PUBLIC", "FOLLOWERS", "PRIVATE"]),
@@ -58,7 +63,7 @@ export const journeySchema = z.object({
 
 export const updateSchema = z.object({
   content: z.string().min(1, "Write something").max(5000),
-  imageUrl: z.string().url().optional().or(z.literal("")),
+  imageUrl: imageSource,
   isMilestone: z.boolean().optional(),
   journeyId: z.string().min(1),
 });

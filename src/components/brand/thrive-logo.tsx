@@ -46,7 +46,7 @@ export function ThriveLogo({
       height={height}
       priority={priority}
       className={cn(
-        "h-auto w-auto select-none",
+        "brand-logo h-auto w-auto select-none",
         variant === "full" ? "h-7 md:h-8" : "h-8 w-auto",
         className
       )}

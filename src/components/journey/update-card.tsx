@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/safe-image";
 import { useTransition } from "react";
 import { EncourageButton } from "@/components/journey/encourage-button";
 import { CommentSection } from "@/components/comments/comment-section";
@@ -83,7 +83,7 @@ export function UpdateCard({
 
       {update.imageUrl ? (
         <div className="relative mt-4 aspect-[16/10] overflow-hidden rounded-[var(--radius-sm)] border border-border bg-warm">
-          <Image
+          <SafeImage
             src={update.imageUrl}
             alt=""
             fill

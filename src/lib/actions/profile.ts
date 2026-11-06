@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { toMonochromeUrl } from "@/lib/mono-image";
 import { profileSchema } from "@/lib/validations";
 
 export async function updateProfileAction(formData: FormData) {
@@ -23,7 +24,7 @@ export async function updateProfileAction(formData: FormData) {
     data: {
       name: parsed.data.name,
       bio: parsed.data.bio || null,
-      image: parsed.data.image || null,
+      image: toMonochromeUrl(parsed.data.image),
     },
   });
 
