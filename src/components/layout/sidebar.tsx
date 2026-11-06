@@ -37,7 +37,7 @@ export function Sidebar({ unread = 0 }: { unread?: number }) {
   const items = [...primaryNav, ...desktopExtra];
 
   return (
-    <aside className="sticky top-0 hidden h-screen w-[180px] shrink-0 flex-col border-r border-border/60 bg-[#f4f3f1] px-5 py-8 md:flex lg:w-[220px] lg:px-6">
+    <aside className="sticky top-0 z-20 hidden h-svh w-[180px] shrink-0 flex-col self-start border-r border-border/60 bg-[#f4f3f1] px-5 py-8 md:flex lg:w-[220px] lg:px-6">
       <div className="mb-12">
         <ThriveLogo href="/discover" priority className="h-8 w-auto lg:h-9" />
       </div>

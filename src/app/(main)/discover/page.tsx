@@ -144,17 +144,19 @@ export default async function DiscoverPage({
   return (
     <div className="pt-1 md:pt-0">
       {/* Norse-style: topic rail + journal grid */}
-      <div className="lg:grid lg:grid-cols-[148px_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[168px_minmax(0,1fr)] xl:gap-12">
+      <div className="lg:grid lg:grid-cols-[148px_minmax(0,1fr)] lg:items-start lg:gap-10 xl:grid-cols-[168px_minmax(0,1fr)] xl:gap-12">
         <aside className="hidden lg:block">
-          <p className="mb-4 text-[11px] font-medium uppercase tracking-[0.14em] text-subtle">
-            Topics
-          </p>
-          <CategoryFilters
-            active={category}
-            tab={tab}
-            search={search}
-            orientation="vertical"
-          />
+          <div className="sticky top-8 max-h-[calc(100svh-2rem)] overflow-y-auto pb-8 scrollbar-none">
+            <p className="mb-4 text-[11px] font-medium uppercase tracking-[0.14em] text-subtle">
+              Topics
+            </p>
+            <CategoryFilters
+              active={category}
+              tab={tab}
+              search={search}
+              orientation="vertical"
+            />
+          </div>
         </aside>
 
         <div className="space-y-6">
