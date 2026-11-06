@@ -22,6 +22,7 @@ const mobileNav = [
 ];
 
 const desktopNav = [
+  { href: "/discover", label: "Discover" },
   { href: "/following", label: "Following" },
   { href: "/create", label: "Create" },
   { href: "/journeys", label: "Journeys" },
