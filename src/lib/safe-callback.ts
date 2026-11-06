@@ -5,11 +5,7 @@ export function safeCallbackUrl(
 ) {
   const value = typeof raw === "string" ? raw.trim() : "";
   if (!value.startsWith("/") || value.startsWith("//")) return fallback;
-  if (
-    value.startsWith("/login") ||
-    value.startsWith("/register") ||
-    value.startsWith("/api/")
-  ) {
+  if (value.startsWith("/login") || value.startsWith("/register") || value.startsWith("/api/")) {
     return fallback;
   }
   return value;

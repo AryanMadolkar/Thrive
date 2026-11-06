@@ -11,7 +11,7 @@ export default async function RegisterPage({
   searchParams: Promise<{ callbackUrl?: string }>;
 }) {
   const params = await searchParams;
-  const callbackUrl = safeCallbackUrl(params.callbackUrl);
+  const callbackUrl = safeCallbackUrl(params.callbackUrl, "/onboarding");
 
   try {
     const session = await auth();

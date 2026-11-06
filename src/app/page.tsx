@@ -1,165 +1,261 @@
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { db } from "@/lib/db";
 import { ThriveLogo } from "@/components/brand/thrive-logo";
+import { MarketingNav } from "@/components/landing/marketing-nav";
+import { HeroShowcase } from "@/components/landing/hero-showcase";
+import { ProductPreview } from "@/components/landing/product-preview";
+import { DiscoverGrid } from "@/components/landing/discover-grid";
 
 export default async function LandingPage() {
   let session = null;
   try {
     session = await auth();
   } catch {
-    // Missing AUTH_SECRET during misconfigured deploys should not hard-crash the landing.
+    session = null;
   }
   if (session?.user) redirect("/discover");
 
-  let founding: {
-    slug: string;
-    title: string;
-    description: string | null;
-  } | null = null;
-
-  try {
-    founding = await db.journey.findFirst({
-      where: { isOfficial: true, slug: "building-thrive" },
-      select: { slug: true, title: true, description: true },
-    });
-  } catch {
-    founding = null;
-  }
-
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#fafafa] text-foreground">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 55% at 50% -10%, #ebebeb 0%, transparent 55%), radial-gradient(ellipse 50% 40% at 100% 100%, #f0f0f0 0%, transparent 45%)",
-        }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.35]"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E\")",
-        }}
-      />
+    <div className="min-h-screen bg-white text-foreground">
+      <MarketingNav />
 
-      <header className="relative z-10 mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
-        <ThriveLogo href="/" priority className="h-7 w-auto sm:h-8" />
-        <nav className="flex items-center gap-2 sm:gap-3">
-          <Link
-            href="/login"
-            className="hidden text-sm text-muted transition hover:text-foreground sm:inline"
-          >
-            Explore
-          </Link>
-          <Link
-            href="/login"
-            className="rounded-full px-3.5 py-2 text-sm font-medium text-foreground transition hover:bg-black/[0.04]"
-          >
-            Sign in
-          </Link>
-          <Link
-            href="/register"
-            className="rounded-full bg-foreground px-4 py-2 text-sm font-semibold text-white transition hover:bg-foreground/90"
-          >
-            Join
-          </Link>
-        </nav>
-      </header>
-
-      <main className="relative z-10">
-        <section className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-5xl flex-col justify-center px-6 pb-20 pt-10 md:pt-6">
-          <p className="landing-fade text-[13px] font-medium tracking-[0.18em] text-muted uppercase">
-            A social journal for progress
-          </p>
-          <h1 className="landing-fade landing-fade-delay-1 mt-6 max-w-3xl">
-            <span className="sr-only">THRIVE</span>
-            <ThriveLogo
-              href={null}
-              priority
-              className="h-14 w-auto sm:h-20 md:h-24"
-            />
-          </h1>
-          <p className="landing-fade landing-fade-delay-2 mt-6 max-w-lg text-lg leading-relaxed text-muted md:text-xl">
-            Document your journey. Share your progress. Inspire others.
-          </p>
-          <div className="landing-fade landing-fade-delay-3 mt-10 flex flex-wrap items-center gap-3">
-            <Link
-              href="/register"
-              className="inline-flex h-12 items-center rounded-full bg-foreground px-7 text-sm font-semibold text-white transition hover:bg-foreground/90"
-            >
-              Start your journey
-            </Link>
-            <Link
-              href="/login"
-              className="inline-flex h-12 items-center rounded-full border border-border bg-white px-7 text-sm font-semibold transition hover:bg-hover"
-            >
-              Sign in to explore
-            </Link>
-          </div>
-        </section>
-
-        <section className="border-t border-border bg-white">
-          <div className="mx-auto grid max-w-5xl gap-12 px-6 py-20 md:grid-cols-3 md:gap-10">
-            {[
-              {
-                title: "Journeys, not posts",
-                body: "Every update belongs to a longer story — so progress is readable over time.",
-              },
-              {
-                title: "Follow what moves you",
-                body: "Follow a journey without following the person. Stay close to the stories that matter.",
-              },
-              {
-                title: "Encourage, don’t compete",
-                body: "Comments and encouragement are built for support — not streaks or scoreboards.",
-              },
-            ].map((item) => (
-              <div key={item.title}>
-                <h2 className="text-base font-bold tracking-tight">{item.title}</h2>
-                <p className="mt-2 text-sm leading-relaxed text-muted">
-                  {item.body}
-                </p>
+      <main>
+        {/* Hero */}
+        <section className="border-b border-border bg-[#faf9f7]">
+          <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-14 md:px-8 md:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:py-24">
+            <div>
+              <p className="text-[12px] font-medium uppercase tracking-[0.18em] text-muted">
+                A social journal for progress
+              </p>
+              <h1 className="mt-5 max-w-xl text-[clamp(2.4rem,5.5vw,3.75rem)] font-semibold leading-[1.05] tracking-[-0.045em]">
+                Every journey deserves to be seen.
+              </h1>
+              <p className="mt-5 max-w-lg text-[16px] leading-relaxed text-muted md:text-[17px]">
+                Big goals don’t happen overnight. THRIVE is a place to document
+                the little steps, share your progress and discover the journeys
+                that inspire you.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Link
+                  href="/register"
+                  className="inline-flex h-12 items-center rounded-full bg-foreground px-7 text-sm font-semibold text-white transition-colors hover:bg-foreground/90 active:scale-[0.98]"
+                >
+                  Start your journey
+                </Link>
+                <Link
+                  href="/discover"
+                  className="inline-flex h-12 items-center rounded-full border border-border bg-white px-7 text-sm font-semibold transition-colors hover:bg-hover active:scale-[0.98]"
+                >
+                  Explore journeys
+                </Link>
               </div>
-            ))}
+              <p className="mt-4 text-[13px] text-subtle">
+                Create your journey. Share at your own pace.
+              </p>
+            </div>
+            <HeroShowcase />
           </div>
         </section>
 
-        {founding ? (
-          <section className="border-t border-border bg-[#fafafa]">
-            <div className="mx-auto max-w-5xl px-6 py-20">
-              <p className="text-[12px] font-medium tracking-[0.16em] text-muted uppercase">
-                Founding journey
-              </p>
-              <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">
-                {founding.title}
+        {/* Product explanation */}
+        <section id="how-it-works" className="scroll-mt-20 border-b border-border bg-white">
+          <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
+            <div className="max-w-2xl">
+              <h2 className="text-[clamp(1.75rem,3.5vw,2.5rem)] font-semibold tracking-[-0.035em]">
+                Progress is a story, not a single moment.
               </h2>
-              <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-muted line-clamp-3">
-                {founding.description}
+              <p className="mt-4 text-[16px] leading-relaxed text-muted">
+                THRIVE gives your goals a place to grow. Every update becomes
+                part of a bigger picture.
               </p>
+            </div>
+            <div className="mt-12 grid gap-8 md:grid-cols-3 md:gap-10">
+              {[
+                {
+                  title: "Document your journey",
+                  body: "Start with something you care about. Share updates, photos, reflections and milestones as you go.",
+                },
+                {
+                  title: "Discover other journeys",
+                  body: "Explore what other people are learning, building, creating and working towards.",
+                },
+                {
+                  title: "Encourage one another",
+                  body: "Follow journeys, celebrate progress and leave thoughtful encouragement along the way.",
+                },
+              ].map((item) => (
+                <div
+                  key={item.title}
+                  className="border-t border-border pt-6 md:border-t-0 md:border-l md:pl-8 md:pt-0 first:md:border-l-0 first:md:pl-0"
+                >
+                  <h3 className="text-[18px] font-semibold tracking-[-0.02em]">
+                    {item.title}
+                  </h3>
+                  <p className="mt-3 text-[14px] leading-relaxed text-muted">
+                    {item.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Product preview */}
+        <section className="border-b border-border bg-[#faf9f7]">
+          <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
+            <div className="max-w-2xl">
+              <h2 className="text-[clamp(1.75rem,3.5vw,2.5rem)] font-semibold tracking-[-0.035em]">
+                See where a journey can take you.
+              </h2>
+              <p className="mt-4 text-[16px] leading-relaxed text-muted">
+                A calm timeline of updates, photos and encouragement — so
+                progress stays readable over time.
+              </p>
+            </div>
+            <div className="mt-10">
+              <ProductPreview />
+            </div>
+          </div>
+        </section>
+
+        {/* Discover */}
+        <section className="border-b border-border bg-white">
+          <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
+            <div className="max-w-2xl">
+              <h2 className="text-[clamp(1.75rem,3.5vw,2.5rem)] font-semibold tracking-[-0.035em]">
+                Find journeys that move you.
+              </h2>
+              <p className="mt-4 text-[16px] leading-relaxed text-muted">
+                You can enjoy THRIVE even if you don’t want to post regularly —
+                discovery is part of the experience.
+              </p>
+            </div>
+            <div className="mt-10">
+              <DiscoverGrid />
+            </div>
+          </div>
+        </section>
+
+        {/* Philosophy */}
+        <section id="about" className="scroll-mt-20 border-b border-border bg-[#faf9f7]">
+          <div className="mx-auto max-w-3xl px-5 py-16 text-center md:px-8 md:py-24">
+            <h2 className="text-[clamp(1.75rem,3.5vw,2.5rem)] font-semibold tracking-[-0.035em]">
+              No perfect streaks. No finish-line pressure. Just progress.
+            </h2>
+            <p className="mt-5 text-[16px] leading-relaxed text-muted">
+              Some days bring big milestones. Others bring small steps, setbacks
+              or lessons. Every part of the journey matters.
+            </p>
+            <div className="mt-10 flex flex-wrap justify-center gap-x-8 gap-y-3 text-[13px] font-medium text-foreground">
+              <span>Progress over perfection</span>
+              <span className="text-border-strong">·</span>
+              <span>Encouragement over competition</span>
+              <span className="text-border-strong">·</span>
+              <span>Journeys over isolated posts</span>
+            </div>
+          </div>
+        </section>
+
+        {/* Final CTA */}
+        <section className="border-b border-border bg-white">
+          <div className="mx-auto max-w-3xl px-5 py-16 text-center md:px-8 md:py-24">
+            <h2 className="text-[clamp(1.85rem,3.8vw,2.75rem)] font-semibold tracking-[-0.04em]">
+              Your journey starts wherever you are.
+            </h2>
+            <p className="mt-4 text-[16px] text-muted">
+              You don’t need to have it all figured out. Just start documenting.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Link
-                href={`/login?callbackUrl=${encodeURIComponent(`/j/${founding.slug}`)}`}
-                className="mt-8 inline-flex text-sm font-semibold underline-offset-4 hover:underline"
+                href="/register"
+                className="inline-flex h-12 items-center rounded-full bg-foreground px-7 text-sm font-semibold text-white transition-colors hover:bg-foreground/90"
               >
-                Sign in to follow along →
+                Start your journey
+              </Link>
+              <Link
+                href="/discover"
+                className="inline-flex h-12 items-center rounded-full border border-border px-7 text-sm font-semibold transition-colors hover:bg-hover"
+              >
+                Explore THRIVE
               </Link>
             </div>
-          </section>
-        ) : null}
+          </div>
+        </section>
+      </main>
 
-        <footer className="border-t border-border bg-white">
-          <div className="mx-auto flex max-w-5xl flex-col gap-4 px-6 py-10 sm:flex-row sm:items-center sm:justify-between">
-            <ThriveLogo href="/" className="h-6 w-auto" />
-            <p className="text-xs text-subtle">
+      <footer className="bg-[#faf9f7]">
+        <div className="mx-auto grid max-w-6xl gap-10 px-5 py-12 md:grid-cols-[1.2fr_1fr] md:px-8 md:py-14">
+          <div>
+            <ThriveLogo href="/" className="!h-7 w-auto" />
+            <p className="mt-4 max-w-sm text-[14px] leading-relaxed text-muted">
               Document your journey. Share your progress. Inspire others.
             </p>
           </div>
-        </footer>
-      </main>
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+            <div>
+              <p className="text-[12px] font-medium uppercase tracking-[0.12em] text-subtle">
+                Product
+              </p>
+              <ul className="mt-3 space-y-2 text-[14px]">
+                <li>
+                  <Link href="/discover" className="text-muted hover:text-foreground">
+                    Discover
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/#about" className="text-muted hover:text-foreground">
+                    About
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/register" className="text-muted hover:text-foreground">
+                    Get started
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-[12px] font-medium uppercase tracking-[0.12em] text-subtle">
+                Account
+              </p>
+              <ul className="mt-3 space-y-2 text-[14px]">
+                <li>
+                  <Link href="/login" className="text-muted hover:text-foreground">
+                    Log in
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/register" className="text-muted hover:text-foreground">
+                    Create account
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-[12px] font-medium uppercase tracking-[0.12em] text-subtle">
+                Contact
+              </p>
+              <ul className="mt-3 space-y-2 text-[14px]">
+                <li>
+                  <a
+                    href="mailto:team@thrive.app"
+                    className="text-muted hover:text-foreground"
+                  >
+                    team@thrive.app
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div className="border-t border-border/80">
+          <div className="mx-auto flex max-w-6xl flex-col gap-2 px-5 py-5 text-[12px] text-subtle md:flex-row md:items-center md:justify-between md:px-8">
+            <p>© {new Date().getFullYear()} THRIVE</p>
+            <p>Privacy and terms pages coming soon.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

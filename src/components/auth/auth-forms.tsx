@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useMemo, useState } from "react";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
 import {
@@ -9,19 +9,25 @@ import {
   type ActionState,
 } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
-import { FieldError, Input, Label } from "@/components/ui/input";
+import { Input, Label } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 const initial: ActionState = {};
 
 function PasswordField({
   id = "password",
+  name = "password",
   autoComplete,
   minLength,
+  value,
+  onChange,
 }: {
   id?: string;
+  name?: string;
   autoComplete: string;
   minLength?: number;
+  value?: string;
+  onChange?: (v: string) => void;
 }) {
   const [visible, setVisible] = useState(false);
 
@@ -29,13 +35,15 @@ function PasswordField({
     <div className="relative">
       <Input
         id={id}
-        name="password"
+        name={name}
         type={visible ? "text" : "password"}
         required
         minLength={minLength}
         autoComplete={autoComplete}
         className="h-11 pr-11"
         placeholder="••••••••"
+        value={value}
+        onChange={onChange ? (e) => onChange(e.target.value) : undefined}
       />
       <button
         type="button"
@@ -53,6 +61,15 @@ function PasswordField({
   );
 }
 
+function passwordStrength(password: string) {
+  let score = 0;
+  if (password.length >= 8) score += 1;
+  if (password.length >= 12) score += 1;
+  if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score += 1;
+  if (/\d/.test(password) || /[^A-Za-z0-9]/.test(password)) score += 1;
+  return score;
+}
+
 export function LoginForm({
   callbackUrl = "/discover",
 }: {
@@ -62,9 +79,11 @@ export function LoginForm({
 
   return (
     <div>
-      <h1 className="text-2xl font-bold tracking-tight">Sign in</h1>
-      <p className="mt-1.5 text-sm text-muted">
-        Welcome back. Continue following the journeys you care about.
+      <h1 className="text-[28px] font-semibold tracking-[-0.03em]">
+        Welcome back.
+      </h1>
+      <p className="mt-2 text-sm leading-relaxed text-muted">
+        Your journeys are right where you left them.
       </p>
 
       <form action={action} className="mt-8 space-y-4">
@@ -82,11 +101,7 @@ export function LoginForm({
           />
         </div>
         <div>
-          <div className="mb-1.5 flex items-center justify-between">
-            <Label htmlFor="password" className="mb-0">
-              Password
-            </Label>
-          </div>
+          <Label htmlFor="password">Password</Label>
           <PasswordField autoComplete="current-password" />
         </div>
 
@@ -101,18 +116,17 @@ export function LoginForm({
           className="h-11 w-full rounded-full text-sm font-semibold"
           disabled={pending}
         >
-          {pending ? "Signing in…" : "Sign in"}
+          {pending ? "Logging in…" : "Log in"}
         </Button>
       </form>
 
-      <AuthDivider />
-      <GoogleAuthButton />
+      <GoogleAuthOptional />
 
       <p className="mt-8 text-center text-sm text-muted">
         New to THRIVE?{" "}
         <Link
           href={
-            callbackUrl && callbackUrl !== "/discover"
+            callbackUrl !== "/discover"
               ? `/register?callbackUrl=${encodeURIComponent(callbackUrl)}`
               : "/register"
           }
@@ -126,23 +140,37 @@ export function LoginForm({
 }
 
 export function RegisterForm({
-  callbackUrl = "/discover",
+  callbackUrl = "/onboarding",
 }: {
   callbackUrl?: string;
 }) {
   const [state, action, pending] = useActionState(registerAction, initial);
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const strength = useMemo(() => passwordStrength(password), [password]);
+  const mismatch = confirm.length > 0 && confirm !== password;
+
+  const labels = ["Too short", "Basic", "Good", "Strong", "Excellent"];
 
   return (
     <div>
-      <h1 className="text-2xl font-bold tracking-tight">Create account</h1>
-      <p className="mt-1.5 text-sm text-muted">
-        Start documenting in under a minute. You can explore without posting.
+      <h1 className="text-[28px] font-semibold tracking-[-0.03em]">
+        Create your account
+      </h1>
+      <p className="mt-2 text-sm leading-relaxed text-muted">
+        Join THRIVE and start documenting your journey.
       </p>
 
-      <form action={action} className="mt-8 space-y-4">
+      <form
+        action={action}
+        className="mt-8 space-y-4"
+        onSubmit={(e) => {
+          if (mismatch || password.length < 8) e.preventDefault();
+        }}
+      >
         <input type="hidden" name="callbackUrl" value={callbackUrl} />
         <div>
-          <Label htmlFor="name">Name</Label>
+          <Label htmlFor="name">Full name</Label>
           <Input
             id="name"
             name="name"
@@ -173,7 +201,7 @@ export function RegisterForm({
           </p>
         </div>
         <div>
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">Email address</Label>
           <Input
             id="email"
             name="email"
@@ -186,8 +214,40 @@ export function RegisterForm({
         </div>
         <div>
           <Label htmlFor="password">Password</Label>
-          <PasswordField autoComplete="new-password" minLength={8} />
-          <p className="mt-1.5 text-xs text-subtle">At least 8 characters.</p>
+          <PasswordField
+            autoComplete="new-password"
+            minLength={8}
+            value={password}
+            onChange={setPassword}
+          />
+          <div className="mt-2 flex gap-1">
+            {[0, 1, 2, 3].map((i) => (
+              <span
+                key={i}
+                className={cn(
+                  "h-1 flex-1 rounded-full bg-border",
+                  strength > i && "bg-foreground"
+                )}
+              />
+            ))}
+          </div>
+          <p className="mt-1.5 text-xs text-subtle">
+            {password ? labels[strength] : "At least 8 characters."}
+          </p>
+        </div>
+        <div>
+          <Label htmlFor="confirmPassword">Confirm password</Label>
+          <PasswordField
+            id="confirmPassword"
+            name="confirmPassword"
+            autoComplete="new-password"
+            minLength={8}
+            value={confirm}
+            onChange={setConfirm}
+          />
+          {mismatch ? (
+            <p className="mt-1.5 text-xs text-danger">Passwords don’t match.</p>
+          ) : null}
         </div>
 
         {state.error ? (
@@ -201,101 +261,58 @@ export function RegisterForm({
           </div>
         ) : null}
 
+        <p className="text-[12px] leading-relaxed text-subtle">
+          By creating an account you agree to use THRIVE respectfully. Privacy
+          and terms pages are coming soon.
+        </p>
+
         <Button
           type="submit"
           className="h-11 w-full rounded-full text-sm font-semibold"
-          disabled={pending}
+          disabled={pending || mismatch || password.length < 8}
         >
           {pending ? "Creating account…" : "Create account"}
         </Button>
       </form>
 
-      <AuthDivider />
-      <GoogleAuthButton />
+      <GoogleAuthOptional />
 
       <p className="mt-8 text-center text-sm text-muted">
         Already have an account?{" "}
         <Link
           href={
-            callbackUrl && callbackUrl !== "/discover"
+            callbackUrl !== "/onboarding" && callbackUrl !== "/discover"
               ? `/login?callbackUrl=${encodeURIComponent(callbackUrl)}`
               : "/login"
           }
           className="font-semibold text-foreground underline-offset-2 hover:underline"
         >
-          Sign in
+          Log in
         </Link>
       </p>
     </div>
   );
 }
 
-function AuthDivider() {
-  return (
-    <div className="my-6 flex items-center gap-3">
-      <div className="h-px flex-1 bg-border" />
-      <span className="text-xs text-subtle">or</span>
-      <div className="h-px flex-1 bg-border" />
-    </div>
-  );
-}
-
-function GoogleAuthButton({ className }: { className?: string }) {
+function GoogleAuthOptional() {
   const enabled = process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === "true";
-
-  if (!enabled) {
-    return (
-      <button
-        type="button"
-        disabled
-        className={cn(
-          "flex h-11 w-full items-center justify-center gap-2.5 rounded-full border border-border bg-white text-sm font-medium text-muted opacity-70",
-          className
-        )}
-        title="Google sign-in coming soon"
-      >
-        <GoogleIcon />
-        Continue with Google
-        <span className="text-[11px] text-subtle">(soon)</span>
-      </button>
-    );
-  }
+  if (!enabled) return null;
 
   return (
-    <form action="/api/auth/signin/google">
-      <button
-        type="submit"
-        className={cn(
-          "flex h-11 w-full items-center justify-center gap-2.5 rounded-full border border-border bg-white text-sm font-semibold transition hover:bg-hover",
-          className
-        )}
-      >
-        <GoogleIcon />
-        Continue with Google
-      </button>
-    </form>
-  );
-}
-
-function GoogleIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
-      <path
-        fill="#4285F4"
-        d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615Z"
-      />
-      <path
-        fill="#34A853"
-        d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18Z"
-      />
-      <path
-        fill="#FBBC05"
-        d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332Z"
-      />
-      <path
-        fill="#EA4335"
-        d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58Z"
-      />
-    </svg>
+    <>
+      <div className="my-6 flex items-center gap-3">
+        <div className="h-px flex-1 bg-border" />
+        <span className="text-xs text-subtle">or</span>
+        <div className="h-px flex-1 bg-border" />
+      </div>
+      <form action="/api/auth/signin/google">
+        <button
+          type="submit"
+          className="flex h-11 w-full items-center justify-center gap-2.5 rounded-full border border-border bg-white text-sm font-semibold transition hover:bg-hover"
+        >
+          Continue with Google
+        </button>
+      </form>
+    </>
   );
 }

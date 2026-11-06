@@ -1,25 +1,16 @@
 import Link from "next/link";
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { EmptyState } from "@/components/ui/empty-state";
 import { formatRelative } from "@/lib/utils";
 import { markNotificationsReadAction } from "@/lib/actions/comments";
 import { Avatar } from "@/components/ui/avatar";
+import { requireAuth } from "@/lib/require-auth";
 
 export const metadata = { title: "Notifications" };
 
 export default async function NotificationsPage() {
-  const session = await auth();
-  if (!session?.user) {
-    return (
-      <EmptyState
-        title="Sign in for notifications"
-        description="We’ll let you know when someone follows your journey or leaves encouragement."
-        actionLabel="Sign in"
-        actionHref="/login"
-      />
-    );
-  }
+  const sessionUser = await requireAuth("/notifications");
+  const session = { user: sessionUser };
 
   const notifications = await db.notification.findMany({
     where: { recipientId: session.user.id },

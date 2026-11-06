@@ -1,27 +1,18 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { logoutAction } from "@/lib/actions/auth";
+import { requireAuth } from "@/lib/require-auth";
 import { CATEGORY_LABELS } from "@/lib/utils";
 
 export const metadata = { title: "Profile" };
 
 export default async function ProfilePage() {
-  const session = await auth();
-  if (!session?.user) {
-    return (
-      <EmptyState
-        title="Sign in to view your profile"
-        description="Your journeys, followers and settings live here."
-        actionLabel="Sign in"
-        actionHref="/login"
-      />
-    );
-  }
+  const sessionUser = await requireAuth("/profile");
+  const session = { user: sessionUser };
 
   const user = await db.user.findUnique({
     where: { id: session.user.id },

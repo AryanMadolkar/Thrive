@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ThriveLogo } from "@/components/brand/thrive-logo";
 
@@ -8,40 +9,33 @@ export default function AuthLayout({
 }) {
   return (
     <div className="min-h-screen bg-white md:grid md:grid-cols-2">
-      <aside className="relative hidden overflow-hidden border-r border-border bg-[#fafafa] md:flex md:flex-col md:justify-between md:px-12 md:py-12 lg:px-16">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse 70% 50% at 20% 0%, #e8e8e8 0%, transparent 55%)",
-          }}
+      <aside className="relative hidden overflow-hidden md:block">
+        <Image
+          src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&q=80"
+          alt=""
+          fill
+          priority
+          className="object-cover"
+          sizes="50vw"
         />
-        <div className="relative z-10">
-          <ThriveLogo href="/" priority className="h-8 w-auto" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/20" />
+        <div className="absolute inset-0 flex flex-col justify-between p-10 lg:p-14">
+          <ThriveLogo href="/" tone="dark" priority className="!h-8 w-auto" />
+          <div className="max-w-md text-white">
+            <h1 className="text-4xl font-semibold leading-tight tracking-[-0.035em] lg:text-5xl">
+              Your next chapter starts here.
+            </h1>
+            <p className="mt-4 text-[15px] leading-relaxed text-white/80">
+              Create a space for the things you’re working towards. Share your
+              progress and find inspiration along the way.
+            </p>
+          </div>
         </div>
-        <div className="relative z-10 max-w-sm">
-          <p className="text-[13px] font-medium tracking-[0.16em] text-muted uppercase">
-            Welcome
-          </p>
-          <h1 className="mt-4 text-4xl font-bold leading-tight tracking-tight lg:text-5xl">
-            Your journey
-            <br />
-            starts here.
-          </h1>
-          <p className="mt-5 text-[15px] leading-relaxed text-muted">
-            Create an account to document progress, follow journeys that inspire
-            you, and leave encouragement along the way.
-          </p>
-        </div>
-        <p className="relative z-10 text-xs text-subtle">
-          Document. Share. Inspire.
-        </p>
       </aside>
 
       <div className="flex min-h-screen flex-col">
-        <div className="flex items-center justify-between px-5 py-5 md:hidden">
-          <ThriveLogo href="/" className="h-7 w-auto" />
+        <div className="flex items-center justify-between border-b border-border px-5 py-4 md:hidden">
+          <ThriveLogo href="/" className="!h-7 w-auto" />
           <Link href="/" className="text-sm text-muted">
             Home
           </Link>

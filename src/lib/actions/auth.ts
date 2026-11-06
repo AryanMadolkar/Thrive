@@ -22,6 +22,7 @@ export async function registerAction(
     username: formData.get("username"),
     email: formData.get("email"),
     password: formData.get("password"),
+    confirmPassword: formData.get("confirmPassword") || undefined,
   });
 
   if (!parsed.success) {
@@ -72,7 +73,10 @@ export async function registerAction(
     };
   }
 
-  const redirectTo = safeCallbackUrl(formData.get("callbackUrl"));
+  const redirectTo = safeCallbackUrl(
+    formData.get("callbackUrl"),
+    "/onboarding"
+  );
 
   try {
     await signIn("credentials", {

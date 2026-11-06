@@ -1,24 +1,15 @@
 import Link from "next/link";
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
+import { requireAuth } from "@/lib/require-auth";
 import { CATEGORY_LABELS, formatDate } from "@/lib/utils";
 
 export const metadata = { title: "My Journeys" };
 
 export default async function MyJourneysPage() {
-  const session = await auth();
-  if (!session?.user) {
-    return (
-      <EmptyState
-        title="Sign in to see your journeys"
-        description="Your active, completed, draft and private journeys will live here."
-        actionLabel="Sign in"
-        actionHref="/login"
-      />
-    );
-  }
+  const sessionUser = await requireAuth("/journeys");
+  const session = { user: sessionUser };
 
   const journeys = await db.journey.findMany({
     where: { creatorId: session.user.id },
